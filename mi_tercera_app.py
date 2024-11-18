@@ -106,3 +106,6 @@ elif menu == "Configurar Metas":
     configurar_metas()
 elif menu == "Generar Reportes":
     generar_reporte()
+# Agregar mensaje en el pie de página
+st.markdown("---")
+st.markdown("### Hecho por Julian Guarín")
