@@ -31,7 +31,7 @@ if "preguntas" not in st.session_state:
     ]
     st.session_state.puntaje = 0
     st.session_state.indice_actual = 0
-    st.session_state.estado_pregunta = "esperando_respuesta"  # Estados: "esperando_respuesta", "respuesta_mostrada"
+    st.session_state.mostrar_respuesta = False  # Controla si ya se respondió la pregunta
 
 # Función para mostrar una pregunta
 def mostrar_pregunta():
@@ -44,21 +44,21 @@ def mostrar_pregunta():
         key=f"pregunta_{st.session_state.indice_actual}",
     )
 
-    # Estado: esperando respuesta
-    if st.session_state.estado_pregunta == "esperando_respuesta":
+    # Botón para responder
+    if not st.session_state.mostrar_respuesta:
         if st.button("Responder"):
             if opcion_seleccionada == pregunta_actual["respuesta"]:
                 st.success("¡Correcto!")
                 st.session_state.puntaje += 1
             else:
                 st.error(f"Incorrecto. La respuesta correcta es: {pregunta_actual['respuesta']}")
-            st.session_state.estado_pregunta = "respuesta_mostrada"
+            st.session_state.mostrar_respuesta = True  # Habilitar el botón "Siguiente"
 
-    # Estado: respuesta mostrada
-    elif st.session_state.estado_pregunta == "respuesta_mostrada":
+    # Botón para avanzar a la siguiente pregunta
+    if st.session_state.mostrar_respuesta:
         if st.button("Siguiente"):
             st.session_state.indice_actual += 1
-            st.session_state.estado_pregunta = "esperando_respuesta"
+            st.session_state.mostrar_respuesta = False  # Reiniciar el estado para la nueva pregunta
 
 # Función para mostrar el resultado final
 def mostrar_resultado():
@@ -68,7 +68,7 @@ def mostrar_resultado():
     if st.button("Reiniciar Trivia"):
         st.session_state.puntaje = 0
         st.session_state.indice_actual = 0
-        st.session_state.estado_pregunta = "esperando_respuesta"
+        st.session_state.mostrar_respuesta = False
 
 # Interfaz principal
 st.title("Trivia Interactiva 🌟")
@@ -79,7 +79,6 @@ if st.session_state.indice_actual < len(st.session_state.preguntas):
     mostrar_pregunta()
 else:
     mostrar_resultado()
-
 
 
 # Agregar mensaje en el pie de página
