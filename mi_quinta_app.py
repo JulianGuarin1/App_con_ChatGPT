@@ -31,6 +31,7 @@ if "preguntas" not in st.session_state:
     ]
     st.session_state.puntaje = 0
     st.session_state.indice_actual = 0
+    st.session_state.respuesta_procesada = False
 
 # Función para mostrar una pregunta
 def mostrar_pregunta():
@@ -42,13 +43,20 @@ def mostrar_pregunta():
         pregunta_actual["opciones"],
         key=f"pregunta_{st.session_state.indice_actual}",
     )
+    
     if st.button("Responder"):
-        if opcion_seleccionada == pregunta_actual["respuesta"]:
-            st.success("¡Correcto!")
-            st.session_state.puntaje += 1
-        else:
-            st.error(f"Incorrecto. La respuesta correcta es: {pregunta_actual['respuesta']}")
-        st.session_state.indice_actual += 1
+        if not st.session_state.respuesta_procesada:
+            if opcion_seleccionada == pregunta_actual["respuesta"]:
+                st.success("¡Correcto!")
+                st.session_state.puntaje += 1
+            else:
+                st.error(f"Incorrecto. La respuesta correcta es: {pregunta_actual['respuesta']}")
+            st.session_state.respuesta_procesada = True
+
+    if st.session_state.respuesta_procesada:
+        if st.button("Siguiente"):
+            st.session_state.indice_actual += 1
+            st.session_state.respuesta_procesada = False
 
 # Función para mostrar el resultado final
 def mostrar_resultado():
@@ -58,6 +66,7 @@ def mostrar_resultado():
     if st.button("Reiniciar Trivia"):
         st.session_state.puntaje = 0
         st.session_state.indice_actual = 0
+        st.session_state.respuesta_procesada = False
 
 # Interfaz principal
 st.title("Trivia Interactiva 🌟")
@@ -68,6 +77,7 @@ if st.session_state.indice_actual < len(st.session_state.preguntas):
     mostrar_pregunta()
 else:
     mostrar_resultado()
+
 # Agregar mensaje en el pie de página
 st.markdown("---")
 st.markdown("### Hecho por Julian Guarín")
