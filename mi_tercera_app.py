@@ -63,6 +63,10 @@ def generar_reporte():
     else:
         inicio_periodo = hoy.replace(day=1)
 
+    # Convertir la columna "Fecha" a datetime si no lo está
+    st.session_state.data["Fecha"] = pd.to_datetime(st.session_state.data["Fecha"], errors="coerce")
+
+    # Filtrar el rango de fechas
     df_periodo = st.session_state.data[
         (st.session_state.data["Fecha"] >= pd.Timestamp(inicio_periodo)) &
         (st.session_state.data["Fecha"] <= pd.Timestamp(hoy))
@@ -86,7 +90,6 @@ def generar_reporte():
         st.write(
             f"Diferencia para alcanzar la meta: {st.session_state.metas['meta'] - ahorros:.2f}"
         )
-
 
 # Interfaz principal
 st.title("App de Finanzas Personales")
